@@ -31,6 +31,7 @@ contract LocalStore {
 
         productCount++;
         products[productCount] = Product(productCount, _name, _price, _stock);
+
         emit ProductAdded(productCount, _name, _price, _stock);
     }
 
