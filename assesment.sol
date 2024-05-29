@@ -31,7 +31,6 @@ contract LocalStore {
 
         productCount++;
         products[productCount] = Product(productCount, _name, _price, _stock);
-
         emit ProductAdded(productCount, _name, _price, _stock);
     }
 
@@ -50,14 +49,12 @@ contract LocalStore {
 
         product.stock -= _quantity;
         payable(owner).transfer(msg.value);
-
         emit ProductPurchased(_id, _quantity, msg.sender);
     }
 
     function getProduct(uint _id) public view returns (string memory, uint, uint) {
         Product memory product = products[_id];
         require(product.id != 0, "Product does not exist");
-
         return (product.name, product.price, product.stock);
     }
 
