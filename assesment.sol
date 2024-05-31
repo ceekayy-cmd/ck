@@ -1,52 +1,30 @@
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract DecentralizedLottery {
-    address public admin;
-    address[] public players;
-    uint public ticketPrice;
-    bool public lotteryEnded;
-    address public winner;
+contract PlayerRegistry {
+    string[] players;
+    uint256 public totalPlayers;
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can perform this action");
-        _;
+    event PlayerAdded(string name);
+    event RandomPlayerSelected(string name);
+
+    function addPlayer(string memory _name) public {
+        players.push(_name);
+        totalPlayers++;
+        emit PlayerAdded(_name);
     }
 
-    modifier lotteryActive() {
-        require(!lotteryEnded, "Lottery has already ended");
-        _;
+    function Winner() public view returns (string memory) {
+        require(totalPlayers > 0, "No players registered yet");
+        uint256 randIndex = _randomModulus(totalPlayers);
+        return players[randIndex];
     }
 
-    constructor(uint _ticketPrice) {
-        admin = msg.sender;
-        ticketPrice = _ticketPrice;
-        lotteryEnded = false;
+    function _randomModulus(uint256 _modulus) private view returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(block.timestamp, block.difficulty, players.length))) % _modulus;
     }
 
-    function buyTicket() public payable lotteryActive {
-        require(msg.value == ticketPrice, "Incorrect ticket price");
-        players.push(msg.sender);
-    }
-
-    function endLottery() public onlyAdmin lotteryActive {
-        require(players.length > 0, "No players in the lottery");
-        lotteryEnded = true;
-        selectWinner();
-    }
-
-    function selectWinner() private {
-        uint index = random() % players.length;
-        winner = players[index];
-        payable(winner).transfer(address(this).balance);
-        assert(address(this).balance == 0); // Ensure all funds have been transferred
-    }
-
-    function random() private view returns (uint) {
-        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));
-    }
-
-    function getPlayers() public view returns (address[] memory) {
+    function showplayers() public view returns (string[] memory Players) {
         return players;
     }
 }
