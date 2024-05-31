@@ -9,6 +9,7 @@ contract PlayerRegistry {
     event RandomPlayerSelected(string name);
 
     function addPlayer(string memory _name) public {
+        require(bytes(_name).length > 0, "Player name cannot be empty"); // Added require statement
         players.push(_name);
         totalPlayers++;
         emit PlayerAdded(_name);
@@ -21,7 +22,9 @@ contract PlayerRegistry {
     }
 
     function _randomModulus(uint256 _modulus) private view returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, players.length))) % _modulus;
+        uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, players.length)));
+        assert(randomNumber < _modulus); // Added assert statement
+        return randomNumber % _modulus;
     }
 
     function showplayers() public view returns (string[] memory Players) {
