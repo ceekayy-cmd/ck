@@ -12,11 +12,14 @@ contract PlayerRegistry {
         require(bytes(_name).length > 0, "Name must not be empty");
         players.push(_name);
         totalPlayers++;
+        assert(totalPlayers == players.length); // Ensure consistency
         emit PlayerAdded(_name);
     }
 
     function Winner() public view returns (string memory) {
-        require(totalPlayers > 0, "No players registered yet");
+        if (totalPlayers == 0) {
+            revert("No players registered yet");
+        }
         uint256 randIndex = _randomModulus(totalPlayers);
         return players[randIndex];
     }
