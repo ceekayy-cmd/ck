@@ -85,6 +85,5 @@ contract PlayerRegistry {
         require(balances[msg.sender] >= amount, "Insufficient balance");
         balances[msg.sender] -= amount;
         emit Redeem(msg.sender, amount, winner);
-        // Logic to provide the reward can be added here
     }
 }
