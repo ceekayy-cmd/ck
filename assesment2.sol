@@ -23,5 +23,8 @@ contract PlayerRegistry {
     function _randomModulus(uint256 _modulus) private view returns (uint256) {
         return uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao, players.length))) % _modulus;
     }
-
+    
+    function showPlayers() public view returns (string[] memory) {
+        return players;
+    }
 }
